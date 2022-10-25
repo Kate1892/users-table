@@ -1,0 +1,131 @@
+<div
+  class="relative container mx-auto pt-5"
+  clickOutside
+  (clickOutside)="clickOutside()"
+>
+  <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
+    <table
+      class="relative lg:table-fixed w-full text-sm text-left text-gray-500 dark:text-gray-400"
+    >
+      <thead
+        class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+      >
+        <tr>
+          <th></th>
+          <th scope="col" class="py-3 px-6" *ngFor="let head of HeadArray">
+            {{ head.Head }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          class="bg-white border-b dark:bg-gray-900 dark:border-gray-700"
+          *ngFor="let item of GridArray; let sr = index"
+        >
+          <td class="py-4 px-6">
+            {{ sr + 1 }}
+          </td>
+          <td
+            scope="row"
+            class="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            *ngFor="let head of HeadArray"
+          >
+            <div *ngIf="head.FieldName != ''">
+              <div *ngIf="item.isEdit">
+                <form [formGroup]="userForm" novalidate>
+                  <input
+                    type="text"
+                    [formControlName]="head.FieldName"
+                    id="item[head.FieldName]"
+                    name="item[head.FieldName]"
+                    class="bg-gray-900 border border-gray-300 focus:ring-green-700 focus:border-green-700 rounded-lg p-2 font-medium text-gray-900 whitespace-nowrap block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
+                  />
+
+                  <div
+                    *ngIf="
+                      getFormItem(head.FieldName)?.invalid &&
+                      (getFormItem(head.FieldName)?.dirty ||
+                        getFormItem(head.FieldName)?.touched)
+                    "
+                  >
+                    <div
+                      *ngIf="getFormItem(head.FieldName)?.errors?.['required']"
+                      class="text-rose-700 text-xs text-center"
+                    >
+                      field is required
+                    </div>
+                    <div
+                      *ngIf="getFormItem(head.FieldName)?.errors?.['pattern']"
+                      class="text-rose-700 text-xs text-center"
+                    >
+                      must be a number
+                    </div>
+                    <div
+                      *ngIf="getFormItem(head.FieldName)?.errors?.['email']"
+                      class="text-rose-700 text-xs text-center"
+                    >
+                      incorrect mail address
+                    </div>
+                    <div
+                      *ngIf="getFormItem(head.FieldName)?.errors?.['gender']"
+                      class="text-rose-700 text-xs text-center"
+                    >
+                      male | female | other
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              <div *ngIf="!item.isEdit">
+                {{ item[head.FieldName | toUserKeys] }}
+              </div>
+            </div>
+            <div
+              *ngIf="head.FieldName == ''"
+              class="text-gray-500 flex items-center"
+            >
+              <div *ngIf="item.isEdit">
+                <button
+                  type="button"
+                  [disabled]="userForm.invalid"
+                  (click)="
+                    update($event, getFormItem('action'), item._id, item.id)
+                  "
+                  class="text-green-700 hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg px-1 text-xs text-center dark:border-green-500 dark:text-green-500 dark:hover:text-white dark:hover:bg-green-600 dark:focus:ring-green-800 mr-4"
+                  [ngClass]="{ 'is-disabled': userForm.invalid }"
+                >
+                  <mat-icon>checkCircle</mat-icon>
+                </button>
+              </div>
+              <div *ngIf="!item.isEdit">
+                <button
+                  type="button"
+                  (click)="edit($event, item)"
+                  class="mr-4 hover:text-white"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+              <button
+                type="button"
+                (click)="delete($event, item)"
+                class="hover:text-white"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="mt-2 text-right mr-5">
+    <button
+      type="button"
+      (click)="create($event)"
+      class="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-full text-sm p-2.5 text-center inline-flex items-center mr-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+</div>

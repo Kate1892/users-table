@@ -1,0 +1,7 @@
+.is-disabled {
+  color: gray;
+  border-color: gray;
+  &:hover {
+    background-color: transparent;
+  }
+}
